@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIRAM - Laboratory Inventory and Borrowing Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <h1>HIRAM</h1>
+            <h2>Laboratory Inventory and Borrowing Management System</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+            <p id="loginError" class="error"></p>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard hidden">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>HIRAM</h2>
+                <p id="userRole" class="user-role"></p>
+            </div>
+            
+            <!-- Admin Navigation -->
+            <nav id="adminNav" class="sidebar-nav hidden">
+                <button class="nav-btn active" data-section="admin-home">Dashboard</button>
+                <button class="nav-btn" data-section="inventory">Inventory Management</button>
+                <button class="nav-btn" data-section="all-requests">All Requests</button>
+                <button class="nav-btn" data-section="all-borrowings">All Borrowings</button>
+                <button class="nav-btn" data-section="users">User Management</button>
+                <button class="nav-btn" data-section="admin-logs">System Logs</button>
+                <button class="nav-btn" data-section="reports">Reports</button>
+            </nav>
+            
+            <!-- Staff Navigation -->
+            <nav id="staffNav" class="sidebar-nav hidden">
+                <button class="nav-btn active" data-section="staff-home">Dashboard</button>
+                <button class="nav-btn" data-section="inventory">View Inventory</button>
+                <button class="nav-btn" data-section="pending-requests">Pending Requests</button>
+                <button class="nav-btn" data-section="approved-requests">Approved Requests</button>
+                <button class="nav-btn" data-section="all-borrowings">All Borrowings</button>
+                <button class="nav-btn" data-section="staff-logs">Activity Logs</button>
+                <button class="nav-btn" data-section="reports">Reports</button>
+            </nav>
+            
+            <!-- User Navigation -->
+            <nav id="userNav" class="sidebar-nav hidden">
+                <button class="nav-btn active" data-section="user-home">Dashboard</button>
+                <button class="nav-btn" data-section="inventory">Browse Equipment</button>
+                <button class="nav-btn" data-section="my-requests">My Requests</button>
+                <button class="nav-btn" data-section="my-borrowings">My Borrowings</button>
+                <button class="nav-btn" data-section="user-logs">My Activity</button>
+            </nav>
+            
+            <button id="logoutBtn" class="btn btn-logout">Logout</button>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Admin Home Section -->
+            <section id="admin-homeSection" class="section">
+                <h1>Admin Dashboard</h1>
+                <p class="welcome-text">Welcome Administrator! Manage the laboratory inventory and system users.</p>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Equipment</h3>
+                        <p id="adminTotalEquipment">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Users</h3>
+                        <p id="adminTotalUsers">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pending Requests</h3>
+                        <p id="adminPendingRequests">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active Borrowings</h3>
+                        <p id="adminActiveBorrowings">0</p>
+                    </div>
+                </div>
+                <div class="quick-actions">
+                    <h2>Quick Actions</h2>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="document.querySelector('[data-section=\'inventory\']').click()">Manage Inventory</button>
+                        <button class="action-btn" onclick="document.querySelector('[data-section=\'users\']').click()">Manage Users</button>
+                        <button class="action-btn" onclick="document.querySelector('[data-section=\'all-requests\']').click()">View Requests</button>
+                        <button class="action-btn" onclick="document.querySelector('[data-section=\'reports\']').click()">Generate Reports</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Staff Home Section -->
+            <section id="staff-homeSection" class="section">
+                <h1>Staff Dashboard</h1>
+                <p class="welcome-text">Welcome Staff! Review and manage borrowing requests.</p>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Equipment</h3>
+                        <p id="staffTotalEquipment">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Available</h3>
+                        <p id="staffAvailableEquipment">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pending Requests</h3>
+                        <p id="staffPendingRequests">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active Borrowings</h3>
+                        <p id="staffActiveBorrowings">0</p>
+                    </div>
+                </div>
+                <div class="quick-actions">
+                    <h2>Quick Actions</h2>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="document.querySelector('[data-section=\'pending-requests\']').click()">Review Pending Requests</button>
+                        <button class="action-btn" onclick="document.querySelector('[data-section=\'inventory\']').click()">View Inventory</button>
+                        <button class="action-btn" onclick="document.querySelector('[data-section=\'all-borrowings\']').click()">Track Borrowings</button>
+                        <button class="action-btn" onclick="document.querySelector('[data-section=\'reports\']').click()">View Reports</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- User Home Section -->
+            <section id="user-homeSection" class="section">
+                <h1>User Dashboard</h1>
+                <p class="welcome-text">Welcome! Request and manage laboratory equipment borrowings.</p>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>My Active Borrowings</h3>
+                        <p id="userActiveBorrowings">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>My Pending Requests</h3>
+                        <p id="userPendingRequests">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>My Returned Items</h3>
+                        <p id="userReturnedItems">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Available Equipment</h3>
+                        <p id="userAvailableEquipment">0</p>
+                    </div>
+                </div>
+                <div class="quick-actions">
+                    <h2>Quick Actions</h2>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="document.querySelector('[data-section=\'inventory\']').click()">Browse Equipment</button>
+                        <button class="action-btn" onclick="openNewRequestModal()">New Borrowing Request</button>
+                        <button class="action-btn" onclick="document.querySelector('[data-section=\'my-borrowings\']').click()">View My Borrowings</button>
+                        <button class="action-btn" onclick="document.querySelector('[data-section=\'my-requests\']').click()">Check Request Status</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Old Home Section (kept for compatibility) -->
+            <section id="homeSection" class="section hidden">
+                <h1>Welcome to HIRAM</h1>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Equipment</h3>
+                        <p id="totalEquipment">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Available</h3>
+                        <p id="availableEquipment">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Borrowed</h3>
+                        <p id="borrowedEquipment">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pending Requests</h3>
+                        <p id="pendingRequests">0</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Inventory Section -->
+            <section id="inventorySection" class="section">
+                <h1>Equipment Inventory</h1>
+                <button id="addEquipmentBtn" class="btn btn-primary admin-staff-only">Add Equipment</button>
+                <div class="table-container">
+                    <table id="inventoryTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Quantity</th>
+                                <th>Status</th>
+                                <th class="admin-staff-only">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Borrowing Requests Section -->
+            <section id="requestsSection" class="section">
+                <h1>Borrowing Requests</h1>
+                <button id="newRequestBtn" class="btn btn-primary user-only">New Request</button>
+                <div class="table-container">
+                    <table id="requestsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Equipment</th>
+                                <th>Quantity</th>
+                                <th>Request Date</th>
+                                <th>Duration (Days)</th>
+                                <th>Status</th>
+                                <th class="admin-staff-only">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="requestsBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- My Borrowings Section -->
+            <section id="myBorrowingsSection" class="section">
+                <h1>My Borrowings</h1>
+                <div class="table-container">
+                    <table id="myBorrowingsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Equipment</th>
+                                <th>Quantity</th>
+                                <th>Borrow Date</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Days Remaining</th>
+                            </tr>
+                        </thead>
+                        <tbody id="myBorrowingsBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Activity Logs Section -->
+            <section id="logsSection" class="section">
+                <h1>Activity Logs</h1>
+                <div class="table-container">
+                    <table id="logsTable">
+                        <thead>
+                            <tr>
+                                <th>Date/Time</th>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Reports Section -->
+            <section id="reportsSection" class="section">
+                <h1>Reports</h1>
+                <div class="reports-grid">
+                    <button class="report-btn" data-report="available">Available Equipment</button>
+                    <button class="report-btn" data-report="borrowed">Borrowed Equipment</button>
+                    <button class="report-btn" data-report="records">Borrowing/Returning Records</button>
+                    <button class="report-btn" data-report="inventory">Inventory Status</button>
+                </div>
+                <div id="reportContent" class="report-content"></div>
+            </section>
+
+            <!-- User Management Section (Admin Only) -->
+            <section id="usersSection" class="section">
+                <h1>User Management</h1>
+                <button id="addUserBtn" class="btn btn-primary">Add User</button>
+                <div class="table-container">
+                    <table id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- All Requests Section (Admin/Staff) -->
+            <section id="all-requestsSection" class="section">
+                <h1>All Borrowing Requests</h1>
+                <div class="table-container">
+                    <table id="allRequestsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Equipment</th>
+                                <th>Quantity</th>
+                                <th>Request Date</th>
+                                <th>Duration (Days)</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allRequestsBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- All Borrowings Section (Admin/Staff) -->
+            <section id="all-borrowingsSection" class="section">
+                <h1>All Borrowings</h1>
+                <div class="table-container">
+                    <table id="allBorrowingsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Equipment</th>
+                                <th>Quantity</th>
+                                <th>Borrow Date</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allBorrowingsBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Pending Requests Section (Staff) -->
+            <section id="pending-requestsSection" class="section">
+                <h1>Pending Requests</h1>
+                <div class="table-container">
+                    <table id="pendingRequestsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Equipment</th>
+                                <th>Quantity</th>
+                                <th>Request Date</th>
+                                <th>Duration (Days)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pendingRequestsBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Approved Requests Section (Staff) -->
+            <section id="approved-requestsSection" class="section">
+                <h1>Approved Requests</h1>
+                <div class="table-container">
+                    <table id="approvedRequestsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Equipment</th>
+                                <th>Quantity</th>
+                                <th>Request Date</th>
+                                <th>Approved Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approvedRequestsBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- My Requests Section (User) -->
+            <section id="my-requestsSection" class="section">
+                <h1>My Requests</h1>
+                <button id="newRequestBtn2" class="btn btn-primary">New Request</button>
+                <div class="table-container">
+                    <table id="myRequestsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Equipment</th>
+                                <th>Quantity</th>
+                                <th>Request Date</th>
+                                <th>Duration (Days)</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="myRequestsBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Admin Logs Section (Admin) -->
+            <section id="admin-logsSection" class="section">
+                <h1>System Logs</h1>
+                <div class="pagination-controls">
+                    <label for="logsPerPage">Logs per page:</label>
+                    <select id="logsPerPage" onchange="changeLogsPerPage()">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                <div class="table-container">
+                    <table id="adminLogsTable">
+                        <thead>
+                            <tr>
+                                <th>Date/Time</th>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminLogsBody"></tbody>
+                    </table>
+                </div>
+                <div class="pagination-nav">
+                    <button id="logsPrevBtn" class="btn btn-small" onclick="prevLogsPage()">Previous</button>
+                    <span id="logsPageInfo">Page 1 of 1</span>
+                    <button id="logsNextBtn" class="btn btn-small" onclick="nextLogsPage()">Next</button>
+                </div>
+            </section>
+
+            <!-- Staff Logs Section (Staff) -->
+            <section id="staff-logsSection" class="section">
+                <h1>Activity Logs</h1>
+                <div class="table-container">
+                    <table id="staffLogsTable">
+                        <thead>
+                            <tr>
+                                <th>Date/Time</th>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="staffLogsBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- User Logs Section (User) -->
+            <section id="user-logsSection" class="section">
+                <h1>My Activity</h1>
+                <div class="table-container">
+                    <table id="userLogsTable">
+                        <thead>
+                            <tr>
+                                <th>Date/Time</th>
+                                <th>Action</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userLogsBody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add Equipment Modal -->
+    <div id="equipmentModal" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="equipmentModalTitle">Add Equipment</h2>
+            <form id="equipmentForm">
+                <input type="hidden" id="equipmentId">
+                <div class="form-group">
+                    <label for="equipmentName">Name:</label>
+                    <input type="text" id="equipmentName" required>
+                </div>
+                <div class="form-group">
+                    <label for="equipmentCategory">Category:</label>
+                    <input type="text" id="equipmentCategory" required>
+                </div>
+                <div class="form-group">
+                    <label for="equipmentQuantity">Quantity:</label>
+                    <input type="number" id="equipmentQuantity" min="1" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('equipmentModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- New Request Modal -->
+    <div id="requestModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>New Borrowing Request</h2>
+            <form id="requestForm">
+                <div class="form-group">
+                    <label for="requestEquipment">Equipment:</label>
+                    <select id="requestEquipment" required></select>
+                </div>
+                <div class="form-group">
+                    <label for="requestQuantity">Quantity:</label>
+                    <input type="number" id="requestQuantity" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="requestDuration">Duration (Days):</label>
+                    <input type="number" id="requestDuration" min="1" value="7" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('requestModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="userModal" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="userModalTitle">Add User</h2>
+            <form id="userForm">
+                <input type="hidden" id="userEmail">
+                <div class="form-group">
+                    <label for="userName">Name:</label>
+                    <input type="text" id="userName" required>
+                </div>
+                <div class="form-group">
+                    <label for="userEmailInput">Email:</label>
+                    <input type="email" id="userEmailInput" required>
+                </div>
+                <div class="form-group">
+                    <label for="userPassword">Password:</label>
+                    <input type="password" id="userPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="userRole">Role:</label>
+                    <select id="userRoleInput" required>
+                        <option value="user">User</option>
+                        <option value="staff">Staff</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('userModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
